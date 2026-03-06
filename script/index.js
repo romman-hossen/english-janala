@@ -3,43 +3,64 @@ const loadLessons = () => {
     .then((res) => res.json())
     .then((data) => displayLessons(data.data));
 };
+
+// toogoling btn 
+// const removeActive = () =>{
+//   const lessonBtn = document.querySelectorAll(".lesson-btn");
+//   lessonBtn.forEach(btn => btn.classList.remove("active"));
+  
+// }
+
 //loadLevelWord section 
 const loadLevelWord = (id) => {
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
   .then((res) => res.json())
-    .then((json) => displayLevelWord(json.data));
+    .then((json) =>{
+      // removeActive()
+      const clickBtn = document.getElementById(`lesson-btn-${id}`)
+      
+      const lessonBtn = document.querySelectorAll(".lesson-btn");
+      lessonBtn.forEach(btn => {
+        btn.classList.remove("active")
+      })
+      clickBtn.classList.add("active")
+      
+      displayLevelWord(json.data)
+      
+    });
     
 }
-// id
-// : 
-// 5
-// level
-// : 
-// 1
-// meaning
-// : 
-// "আগ্রহী"
-// pronunciation
-// : 
-// "ইগার"
-// word
-// : 
-// "Eager"
+
+const loadWordDetail = () => {
+  
+}
+
+
+
 const displayLevelWord = (words) => {
     const WordCounter = document.getElementById("word-container");
     WordCounter.innerHTML = "";
-    console.log(words)
+    if(words.length == 0){
+      WordCounter.innerHTML =`
+       <div class="text-center col-span-full space-y-5">
+       <img class ="mx-auto" src="./assets/alert-error.png" alt="">
+      <p class="font-bangla text-[#79716B]">এই Lesson এ এখনো কোন Vocabulary যুক্ত করা হয়নি।</p>
+      <h3 class="font-bangla text-4xl font-semibold text-[#18181B]">নেক্সট Lesson এ যান</h3>
+     </div>
+      `
+      return;
+    }
     words.forEach(word =>{
     console.log(word)
     const card = document.createElement("div");
     card.innerHTML =`
-      <div class="bg-base-100 text-center shadow-sm py-10 space-y-6 px-3 md:px-0">
-      <h3 class="text-3xl font-bold">${word.word}</h3>
+      <div class="bg-base-100 text-center shadow-sm py-10 space-y-6 px-3 md:px-2">
+      <h3 class="text-3xl font-bold">${word.word ? word.word : "শব্দ পাওয়া যায়নি"}</h3>
       <p class="text-xl font-medium">Meaning /Pronounciation</p>
-      <h3 class="font-bangla text-3xl font-semibold text-[#18181B]">"${word.meaning} / ${word.pronunciation}"</h3>
+      <h3 class="font-bangla text-3xl font-semibold text-[#18181B]">"${word.meaning ? word.meaning : "অর্থ পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : "Pronounciation পাওয়া  যায়নি"}"</h3>
        <div class="flex justify-between items-center py-5 px-6">
-          <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+          <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-circle-info"></i>
          </button>
         <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
@@ -50,9 +71,8 @@ const displayLevelWord = (words) => {
     `;
     console.log(card)
     WordCounter.append(card);
-  }) 
-     
-    console.log(words) 
+  })      
+  console.log(words) 
 }
 // loadLevelWord("re")
 
@@ -62,7 +82,7 @@ const displayLessons = (data) => {
    data.forEach((elem) => {
     const btnDiv = document.createElement("div");
     btnDiv.innerHTML = `
-         <button  onclick="loadLevelWord(${elem.level_no})" class="btn btn-outline btn-primary" >
+         <button id="lesson-btn-${elem.level_no}"  onclick="loadLevelWord(${elem.level_no})" class="btn btn-outline btn-primary lesson-btn" >
          <i class="fa-solid fa-book-open"></i>Lesson - ${elem.level_no}
          </button>
    `;
