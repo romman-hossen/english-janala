@@ -20,6 +20,17 @@ const loadLessons = () => {
     .then((res) => res.json())
     .then((data) => displayLessons(data.data));
 };
+// get sound section
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+   const voices = window.speechSynthesis.getVoices();
+  utterance.voice = voices[2]; // English
+  utterance.lang = "en-US";
+  utterance.rate = 0.8;   // speed
+  utterance.pitch = 1;  // voice tone
+  utterance.volume = 2;   // volume 
+  window.speechSynthesis.speak(utterance);
+}
 
 // toogoling btn 
 const removeActive = () =>{
@@ -113,7 +124,7 @@ const displayLevelWord = (words) => {
           <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-circle-info"></i>
          </button>
-        <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+        <button onclick="pronounceWord('${word.word}')" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
            <i class="fa-solid fa-volume-high"></i>
         </button>
       </div>
